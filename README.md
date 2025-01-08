@@ -28,9 +28,9 @@ Welcome to the Resume Builder application! This is a basic tool designed to help
 
 1. Start the development server:
 	```bash
-	npm run serve
+	npm run dev
 	```
-2. Open your browser and go to `http://localhost:8080` to start building your resume.
+2. Open your browser and go to `http://localhost:5173` to start building your resume.
 
 ## Contributing
 
