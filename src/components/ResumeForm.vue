@@ -4,7 +4,7 @@
       <h2>Resume Builder</h2>
       <el-form :model="resumeData" label-width="120px">
         <PersonalDetails :data="resumeData.personal" />
-        <Summary v-model="resumeData.summary" />
+        <Summary v-model:modelValue="resumeData.summary" />
         <Experience :data="resumeData.experience" />
         <Education :data="resumeData.education" />
         <Skills :data="resumeData.skills" />
@@ -12,68 +12,14 @@
     </el-card>
 
     <!-- Fixed Save and Export Buttons -->
-    <div class="fixed-buttons">
-      <el-button type="primary" @click="saveResume">Save</el-button>
-      <el-button @click="exportToPDF">Export to PDF</el-button>
-    </div>
+  <div class="fixed-buttons">
+    <el-button type="primary" @click="saveResume" round>Save</el-button>
+    <el-button @click="dialogVisible = true" round>Preview the CV</el-button>
+    <el-button @click="exportToPDF" round>Export to PDF</el-button>
+  </div>
 
-    <!-- Resume Preview -->
-    <el-card id="resume-preview" class="box-card preview-card">
-      <div class="personal-details">
-        <div class="info">
-          <h2>
-            CV of {{ resumeData.personal.fullName }}
-          </h2>
-          <p><el-icon><Briefcase /></el-icon> {{ resumeData.personal.jobTitle }}</p>
-          <p><el-icon><Phone /></el-icon> {{ resumeData.personal.phoneNumber }}</p>
-          <p><el-icon><Message /></el-icon> {{ resumeData.personal.email }}</p>
-          <p v-if="resumeData.personal.portfolioLink"><el-icon><Link /></el-icon> {{ resumeData.personal.portfolioLink }}</p>
-          <p><el-icon><Location /></el-icon> {{ resumeData.personal.address }}</p>
-        </div>
-        <img class="profile-img" :src="resumeData.personal.profilePhoto" alt="Profile Photo"
-          v-if="resumeData.personal.profilePhoto" />
-      </div>
-
-      <div v-if="resumeData.summary" class="summary">
-        <h3><el-icon><Document /></el-icon> Summary</h3>
-        <p class="summary-text">{{ resumeData.summary }}</p>
-      </div>
-
-      <div class="experience">      
-        <h3><el-icon><Suitcase /></el-icon> Experience</h3>
-        <el-timeline style="max-width: 600px; margin-top: 20px;">
-          <el-timeline-item v-for="(experience, index) in resumeData.experience" :key="index"
-            :timestamp="formatMonthYear(experience.startDate) + ' - ' + (experience.currentJob ? 'Present' : formatMonthYear(experience.endDate))">
-            <div>
-              <h4>{{ experience.jobTitle }} at {{ experience.companyName }}</h4>
-              <p>{{ experience.location }}</p>
-              <p>{{ experience.jobDescription }}</p>
-            </div>
-          </el-timeline-item>
-        </el-timeline>
-      </div>
-
-      <div class="education">
-        <h3><el-icon><School /></el-icon> Education</h3>
-        <el-timeline style="max-width: 600px; margin-top: 20px;">
-          <el-timeline-item v-for="(education, index) in resumeData.education" :key="index"
-            :timestamp="formatMonthYear(education.startDate) + ' - ' + (education.currentStudy ? 'Present' : formatMonthYear(education.endDate))">
-            <div>
-              <h4>{{ education.courseTitle }} at {{ education.institution }}</h4>
-              <p>{{ education.location }}</p>
-              <p>{{ education.qualificationType }}</p>
-            </div>
-          </el-timeline-item>
-        </el-timeline>
-      </div>
-
-      <div v-if="resumeData.skills" class="skills">
-        <h3><el-icon><Star /></el-icon> Skills</h3>
-          <ul class="skills-list">
-            <li v-for="(skill, index) in resumeData.skills" :key="index">{{ skill }}</li>
-          </ul>
-      </div>
-    </el-card>
+    <!-- Resume Preview Dialog -->
+    <ResumePreview :visible="dialogVisible" :resumeData="resumeData" @update:visible="dialogVisible = $event" />
   </div>
 </template>
 
@@ -81,12 +27,12 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import html2pdf from 'html2pdf.js';
 import { ElMessage } from 'element-plus';
-import { User, Briefcase, Phone, Message, Link, Location, Document, Suitcase, School, Star } from '@element-plus/icons-vue';
 import PersonalDetails from '../components/PersonalDetails.vue';
 import Summary from '../components/Summary.vue';
 import Experience from '../components/Experience.vue';
 import Education from '../components/Education.vue';
 import Skills from '../components/Skills.vue';
+import ResumePreview from '../components/ResumePreview.vue';
 
 export default defineComponent({
   name: 'ResumeForm',
@@ -96,16 +42,7 @@ export default defineComponent({
     Experience,
     Education,
     Skills,
-    User,
-    Briefcase,
-    Phone,
-    Message,
-    Link,
-    Location,
-    Document,
-    Suitcase,
-    School,
-    Star
+    ResumePreview,
   },
   setup() {
     const resumeData = ref<any>({
@@ -116,31 +53,36 @@ export default defineComponent({
         email: '',
         portfolioLink: '',
         address: '',
-        profilePhoto: ''
+        profilePhoto: '',
       },
       summary: '',
       experience: [],
       education: [],
-      skills: []
+      skills: [],
     });
+
+    const dialogVisible = ref(false);
 
     const saveResume = () => {
       localStorage.setItem('resumeData', JSON.stringify(resumeData.value));
       ElMessage({
         message: `Resume saved for ${resumeData.value.personal.fullName}`,
         type: 'success',
-        duration: 3000
+        duration: 3000,
       });
     };
 
     const exportToPDF = () => {
       const element = document.getElementById('resume-preview') as HTMLElement;
-      html2pdf().from(element).set({
-        margin: 0,
-        filename: 'resume.pdf',
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      }).save();
+      html2pdf()
+        .from(element)
+        .set({
+          margin: 0,
+          filename: 'resume.pdf',
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+        })
+        .save();
     };
 
     const formatMonthYear = (date: string) => {
@@ -160,9 +102,10 @@ export default defineComponent({
       resumeData,
       saveResume,
       exportToPDF,
-      formatMonthYear
+      formatMonthYear,
+      dialogVisible,
     };
-  }
+  },
 });
 </script>
 
@@ -170,69 +113,51 @@ export default defineComponent({
 .resume-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-}
-
-.personal-details {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  border: 1px solid #ebeef5;
-  padding: 10px;
+  gap: 20px;
+  max-width: 600px; /* Set a fixed width for the form */
+  margin: auto; /* Center the form horizontally */
+  padding: 20px;
 }
 
-.profile-img {
-  height: 150px;
-  width: 150px;
-  object-fit: cover;
-  border-radius: 50%;
-  max-width: 100%;
-}
-
-.summary-text {
-  word-wrap: break-word;
-}
-
-.form-card {
-  flex: 2;
-}
-
-.preview-card {
-  flex: 3;
-}
-
-#resume-preview {
-  width: 210mm;
-  min-height: 297mm;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: white;
-}
-
-.skills-list {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  gap: 10px;
-  padding: 0;
-}
-
-.skills-list li {
-  background-color: #f0f2f5;
-  padding: 5px 10px;
-  border-radius: 5px;
+.box-card {
+ margin-top: 10px;  
 }
 
 .fixed-buttons {
-  position: fixed;
-  bottom: 20px;
-  left: 10px;
   display: flex;
-  gap: 10px;
+  gap: 10px; 
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px; 
+  background: linear-gradient(90deg, #e2e2e2, #f8f8f8);
+  border-radius: 8px; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+  z-index: 1000; 
+  align-items: center;
+}
+
+.fixed-buttons el-button {
+  background: transparent;
+  border: none; 
+  color: #000; 
+  font-weight: bold; 
+  padding: 5px 10px; 
+  border-radius: 4px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.fixed-buttons el-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #fff; 
+  transform: translateY(-2px); 
 }
 
 @media (min-width: 768px) {
   .resume-container {
-    flex-direction: row;
+    flex-direction: column; /* Ensure it remains vertical on larger screens */
   }
 }
 
@@ -242,20 +167,9 @@ export default defineComponent({
     display: block;
   }
 
-  .personal-details {
-    flex-direction: column;
-  }
-
   .form-card,
   .preview-card {
     page-break-inside: avoid;
-  }
-
-  #resume-preview {
-    width: 100%;
-    min-height: auto;
-    padding: 0;
-    box-shadow: none;
   }
 
   .fixed-buttons {
