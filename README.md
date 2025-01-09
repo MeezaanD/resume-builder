@@ -13,7 +13,7 @@ Welcome to the Resume Builder application! This is a basic tool designed to help
 
 1. Clone the repository:
 	```bash
-	git clone https://github.com/yourusername/resume-builder.git
+	git clone https://github.com/MeezaanD/resume-builder.git
 	```
 2. Navigate to the project directory:
 	```bash
