@@ -5,10 +5,21 @@
 			<el-input v-model="newSkill" placeholder="Enter a skill"></el-input>
 			<el-button @click="addSkill">Add Skill</el-button>
 		</el-form-item>
-		<ul>
+		<ul class="skills-list-form">
 			<li v-for="(skill, index) in data" :key="index">
-				{{ skill }}
-				<el-button @click="removeSkill(index)" type="danger" icon="el-icon-delete"></el-button>
+				<p>{{ skill }}</p>
+				<el-popconfirm
+					v-if="data.length > 0"
+					title="Are you sure to delete this?"
+					@confirm="removeSkill(index)"
+					placement="top"
+				>
+					<template #reference>
+						<el-button class="delete-btn" type="danger" circle>
+							<el-icon><Delete /></el-icon>
+						</el-button>
+					</template>
+				</el-popconfirm>
 			</li>
 		</ul>
 	</div>
@@ -16,9 +27,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, type PropType } from 'vue';
+import { Delete } from '@element-plus/icons-vue';
 
 export default defineComponent({
 	name: 'Skills',
+	components: {
+		Delete
+	},
 	props: {
 		data: {
 			type: Array as PropType<string[]>,
@@ -36,7 +51,9 @@ export default defineComponent({
 		};
 
 		const removeSkill = (index: number) => {
-			props.data.splice(index, 1);
+			if (index > -1 && index < props.data.length) {
+				props.data.splice(index, 1);
+			}
 		};
 
 		return {
