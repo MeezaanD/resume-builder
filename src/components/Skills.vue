@@ -8,15 +8,13 @@
 		<ul class="skills-list-form">
 			<li v-for="(skill, index) in data" :key="index">
 				<p>{{ skill }}</p>
-				<el-popconfirm
-					v-if="data.length > 0"
-					title="Are you sure to delete this?"
-					@confirm="removeSkill(index)"
-					placement="top"
-				>
+				<el-popconfirm v-if="data.length > 0" title="Are you sure to delete this?" @confirm="removeSkill(index)"
+					placement="top">
 					<template #reference>
 						<el-button class="delete-btn" type="danger" circle>
-							<el-icon><Delete /></el-icon>
+							<el-icon>
+								<Delete />
+							</el-icon>
 						</el-button>
 					</template>
 				</el-popconfirm>
@@ -50,7 +48,7 @@ export default defineComponent({
 
 		function removeSkill(index: number) {
 			// so that we delete the correct skill
-			if (index > -1 && index < props.data.length) { 
+			if (index > -1 && index < props.data.length) {
 				props.data.splice(index, 1);
 			}
 		};
