@@ -4,7 +4,7 @@
       <h2>Resume Builder</h2>
       <el-form :model="resumeData" label-width="120px">
         <PersonalDetails :data="resumeData.personal" />
-        <Summary :data="resumeData.summary" />
+        <Summary v-model="resumeData.summary" />
         <Experience :data="resumeData.experience" />
         <Education :data="resumeData.education" />
         <Skills :data="resumeData.skills" />
@@ -34,37 +34,45 @@
           v-if="resumeData.personal.profilePhoto" />
       </div>
 
-      <h3><el-icon><Document /></el-icon> Summary</h3>
-      <p>{{ resumeData.summary }}</p>
+      <div v-if="resumeData.summary" class="summary">
+        <h3><el-icon><Document /></el-icon> Summary</h3>
+        <p class="summary-text">{{ resumeData.summary }}</p>
+      </div>
 
-      <h3><el-icon><Suitcase /></el-icon> Experience</h3>
-      <el-timeline style="max-width: 600px; margin-top: 20px;">
-        <el-timeline-item v-for="(experience, index) in resumeData.experience" :key="index"
-          :timestamp="formatMonthYear(experience.startDate) + ' - ' + (experience.currentJob ? 'Present' : formatMonthYear(experience.endDate))">
-          <div>
-            <h4>{{ experience.jobTitle }} at {{ experience.companyName }}</h4>
-            <p>{{ experience.location }}</p>
-            <p>{{ experience.jobDescription }}</p>
-          </div>
-        </el-timeline-item>
-      </el-timeline>
+      <div class="experience">      
+        <h3><el-icon><Suitcase /></el-icon> Experience</h3>
+        <el-timeline style="max-width: 600px; margin-top: 20px;">
+          <el-timeline-item v-for="(experience, index) in resumeData.experience" :key="index"
+            :timestamp="formatMonthYear(experience.startDate) + ' - ' + (experience.currentJob ? 'Present' : formatMonthYear(experience.endDate))">
+            <div>
+              <h4>{{ experience.jobTitle }} at {{ experience.companyName }}</h4>
+              <p>{{ experience.location }}</p>
+              <p>{{ experience.jobDescription }}</p>
+            </div>
+          </el-timeline-item>
+        </el-timeline>
+      </div>
 
-      <h3><el-icon><School /></el-icon> Education</h3>
-      <el-timeline style="max-width: 600px; margin-top: 20px;">
-        <el-timeline-item v-for="(education, index) in resumeData.education" :key="index"
-          :timestamp="formatMonthYear(education.startDate) + ' - ' + (education.currentStudy ? 'Present' : formatMonthYear(education.endDate))">
-          <div>
-            <h4>{{ education.courseTitle }} at {{ education.institution }}</h4>
-            <p>{{ education.location }}</p>
-            <p>{{ education.qualificationType }}</p>
-          </div>
-        </el-timeline-item>
-      </el-timeline>
+      <div class="education">
+        <h3><el-icon><School /></el-icon> Education</h3>
+        <el-timeline style="max-width: 600px; margin-top: 20px;">
+          <el-timeline-item v-for="(education, index) in resumeData.education" :key="index"
+            :timestamp="formatMonthYear(education.startDate) + ' - ' + (education.currentStudy ? 'Present' : formatMonthYear(education.endDate))">
+            <div>
+              <h4>{{ education.courseTitle }} at {{ education.institution }}</h4>
+              <p>{{ education.location }}</p>
+              <p>{{ education.qualificationType }}</p>
+            </div>
+          </el-timeline-item>
+        </el-timeline>
+      </div>
 
-      <h3><el-icon><Star /></el-icon> Skills</h3>
-      <ul class="skills-list">
-        <li v-for="(skill, index) in resumeData.skills" :key="index">{{ skill }}</li>
-      </ul>
+      <div v-if="resumeData.skills" class="skills">
+        <h3><el-icon><Star /></el-icon> Skills</h3>
+          <ul class="skills-list">
+            <li v-for="(skill, index) in resumeData.skills" :key="index">{{ skill }}</li>
+          </ul>
+      </div>
     </el-card>
   </div>
 </template>
@@ -179,6 +187,10 @@ export default defineComponent({
   object-fit: cover;
   border-radius: 50%;
   max-width: 100%;
+}
+
+.summary-text {
+  word-wrap: break-word;
 }
 
 .form-card {
