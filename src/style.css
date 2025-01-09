@@ -8,17 +8,22 @@ body {
 	background-color: #f5f5f5;
 }
 
+/* Labels */
+
+.el-form-item__label {
+	justify-content: flex-start !important;
+}
 
 /* Buttons */
 .action-btns {
-    display: flex;
-    justify-content: end;
-    margin-bottom: 20px;
+	display: flex;
+	justify-content: end;
+	margin-bottom: 20px;
 }
 
 /* Lists */
 
-.skills-list-form li{
+.skills-list-form li {
 	padding: 0;
 	display: flex;
 	justify-content: space-between;

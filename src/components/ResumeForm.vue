@@ -115,7 +115,7 @@ export default defineComponent({
 	flex-direction: column;
 	align-items: center;
 	gap: 20px;
-	max-width: 600px;
+	max-width: 500px;
 	/* Set a fixed width for larger screens */
 	width: 100%;
 	/* Full width on smaller screens */
@@ -165,7 +165,7 @@ export default defineComponent({
 
 @media (max-width: 768px) {
 	.resume-container {
-		padding: 10px;
+		padding: 10px 0;
 	}
 
 	.fixed-buttons {
