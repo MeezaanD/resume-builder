@@ -81,11 +81,12 @@ export default defineComponent({
         currentJob: false
       });
     },
+
     deleteExperience(index: number) {
-	if (index > -1 && index < this.data.length) {
-      this.data.splice(index, 1);
+    if (index > -1 && index < this.data.length) { // so that we delete the correct experience
+        this.data.splice(index, 1);
+      }
     }
-  }
   }
 });
 </script>

@@ -31,9 +31,7 @@ import { Delete } from '@element-plus/icons-vue';
 
 export default defineComponent({
 	name: 'Skills',
-	components: {
-		Delete
-	},
+	components: { Delete },
 	props: {
 		data: {
 			type: Array as PropType<string[]>,
@@ -43,15 +41,16 @@ export default defineComponent({
 	setup(props) {
 		const newSkill = ref<string>('');
 
-		const addSkill = () => {
+		function addSkill() {
 			if (newSkill.value) {
 				props.data.push(newSkill.value);
 				newSkill.value = '';
 			}
 		};
 
-		const removeSkill = (index: number) => {
-			if (index > -1 && index < props.data.length) {
+		function removeSkill(index: number) {
+			// so that we delete the correct skill
+			if (index > -1 && index < props.data.length) { 
 				props.data.splice(index, 1);
 			}
 		};

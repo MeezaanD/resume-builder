@@ -48,9 +48,7 @@ import { Delete } from '@element-plus/icons-vue';
 
 export default defineComponent({
   name: 'Education',
-  components: {
-	Delete
-  },
+  components: { Delete },
   props: {
     data: {
       type: Array as PropType<
@@ -79,11 +77,13 @@ export default defineComponent({
         currentStudy: false
       });
     },
+
     deleteEducation(index: number) {
-      if (index > -1 && index < this.data.length) {
+      if (index > -1 && index < this.data.length) { // so that we delete the correct education
         this.data.splice(index, 1);
       }
     }
+
   }
 });
 </script>
