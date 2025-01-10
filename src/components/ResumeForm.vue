@@ -13,9 +13,9 @@
 
 		<!-- Fixed Save and Export Buttons -->
 		<div class="fixed-buttons">
-			<el-button type="primary" @click="saveResume" round>Save</el-button>
-			<el-button @click="dialogVisible = true" round>Preview the CV</el-button>
+			<el-button @click="dialogVisible = true" round>Preview</el-button>
 			<el-button @click="exportToPDF" round>Export to PDF</el-button>
+			<el-button type="primary" @click="saveResume" round>Save</el-button>
 		</div>
 
 		<!-- Resume Preview Dialog -->
@@ -121,7 +121,7 @@ export default defineComponent({
 	/* Full width on smaller screens */
 	margin: auto;
 	/* Center the form horizontally */
-	padding: 20px;
+	padding: 25px 0;
 }
 
 .box-card {
@@ -132,16 +132,19 @@ export default defineComponent({
 
 .fixed-buttons {
 	display: flex;
-	gap: 10px;
+	gap: 5px;
 	position: fixed;
 	top: 10px;
 	left: 50%;
 	transform: translateX(-50%);
-	padding: 10px 20px;
+	padding: 10px 0;
+	max-width: 400px;
+	width: 100%;
 	background: linear-gradient(90deg, #e2e2e2, #f8f8f8);
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	z-index: 1000;
+	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
 	/* Allow buttons to wrap on smaller screens */
