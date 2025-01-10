@@ -126,6 +126,7 @@ export default defineComponent({
 
 .box-card {
 	margin-top: 10px;
+	padding: 0 25px !important;
 	width: 100%;
 	/* Ensure the card takes full width */
 }
@@ -138,7 +139,8 @@ export default defineComponent({
 	left: 50%;
 	transform: translateX(-50%);
 	padding: 10px 0;
-	max-width: 400px;
+	margin: auto;
+	max-width: 350px;
 	width: 100%;
 	background: linear-gradient(90deg, #e2e2e2, #f8f8f8);
 	border-radius: 8px;
@@ -178,6 +180,7 @@ export default defineComponent({
 		transform: none;
 		/* Reset the transform */
 		width: 100%;
+		max-width: 500px;
 		/* Full width on mobile */
 		justify-content: center;
 		/* Center the buttons */
