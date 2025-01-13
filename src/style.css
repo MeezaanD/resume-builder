@@ -21,10 +21,32 @@ body {
 	margin-bottom: 20px;
 }
 
+/* Image */
+
+.profile-img {
+	height: 100px;
+	width: 100px;
+	object-fit: cover;
+	border-radius: 50%;
+	max-width: 100%;
+}
+
 /* Lists */
 
 .skills-list-form li {
 	padding: 0;
 	display: flex;
 	justify-content: space-between;
+}
+
+/* Timeline */
+
+.el-timeline {
+	padding: 0 !important;
+}
+
+/* CV PREVIEW */
+
+.el-dialog {
+	width: 230mm !important;
 }
