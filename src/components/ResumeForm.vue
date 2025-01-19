@@ -3,11 +3,26 @@
 		<el-card class="box-card form-card">
 			<h2>Resume Builder</h2>
 			<el-form :model="resumeData" label-width="120px">
-				<PersonalDetails :data="resumeData.personal" />
-				<Summary v-model:modelValue="resumeData.summary" />
-				<Experience :data="resumeData.experience" />
-				<Education :data="resumeData.education" />
-				<Skills :data="resumeData.skills" />
+				<el-collapse v-model="activeSections">
+					<el-collapse-item title="Personal Details" name="1">
+						<PersonalDetails :data="resumeData.personal" />
+					</el-collapse-item>
+					<el-collapse-item title="Summary" name="2">
+						<Summary v-model:modelValue="resumeData.summary" />
+					</el-collapse-item>
+					<el-collapse-item title="Experience" name="3">
+						<Experience :data="resumeData.experience" />
+					</el-collapse-item>
+					<el-collapse-item title="Education" name="4">
+						<Education :data="resumeData.education" />
+					</el-collapse-item>
+					<el-collapse-item title="Custom Sections" name="5">
+						<CustomSections :data="resumeData.customSections" />
+					</el-collapse-item>
+					<el-collapse-item title="Skills" name="6">
+						<Skills :data="resumeData.skills" />
+					</el-collapse-item>
+				</el-collapse>
 			</el-form>
 		</el-card>
 
@@ -19,7 +34,8 @@
 		</div>
 
 		<!-- Resume Preview Dialog -->
-		<ResumePreview :visible="dialogVisible" :resumeData="resumeData" @update:visible="dialogVisible = $event" />
+		<ResumePreview ref="resumePreview" :visible="dialogVisible" :resumeData="resumeData"
+			@update:visible="dialogVisible = $event" />
 	</div>
 </template>
 
@@ -32,6 +48,7 @@ import Summary from '../components/Summary.vue';
 import Experience from '../components/Experience.vue';
 import Education from '../components/Education.vue';
 import Skills from '../components/Skills.vue';
+import CustomSections from '../components/CustomSections.vue';
 import ResumePreview from '../components/ResumePreview.vue';
 
 export default defineComponent({
@@ -42,6 +59,7 @@ export default defineComponent({
 		Experience,
 		Education,
 		Skills,
+		CustomSections,
 		ResumePreview,
 	},
 	setup() {
@@ -59,9 +77,12 @@ export default defineComponent({
 			experience: [],
 			education: [],
 			skills: [],
+			customSections: [],
 		});
 
 		const dialogVisible = ref(false);
+		const resumePreviewRef = ref<InstanceType<typeof ResumePreview> | null>(null);
+		const activeSections = ref<string[]>(['1', '2', '3', '4', '5', '6']);
 
 		const saveResume = () => {
 			localStorage.setItem('resumeData', JSON.stringify(resumeData.value));
@@ -86,7 +107,7 @@ export default defineComponent({
 		};
 
 		const formatMonthYear = (date: string) => {
-			if (!date) return ''; // Handle empty date
+			if (!date) return '';
 			const options = { month: 'long', year: 'numeric' } as const;
 			return new Date(date).toLocaleDateString('en-US', options);
 		};
@@ -104,6 +125,8 @@ export default defineComponent({
 			exportToPDF,
 			formatMonthYear,
 			dialogVisible,
+			resumePreviewRef,
+			activeSections,
 		};
 	},
 });
@@ -116,19 +139,16 @@ export default defineComponent({
 	align-items: center;
 	gap: 20px;
 	max-width: 500px;
-	/* Set a fixed width for larger screens */
 	width: 100%;
-	/* Full width on smaller screens */
 	margin: auto;
-	/* Center the form horizontally */
-	padding: 25px 0;
+	padding: 25px 20px;
+	background: white;
 }
 
 .box-card {
 	margin-top: 10px;
 	padding: 0 25px !important;
 	width: 100%;
-	/* Ensure the card takes full width */
 }
 
 .fixed-buttons {
@@ -149,7 +169,6 @@ export default defineComponent({
 	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
-	/* Allow buttons to wrap on smaller screens */
 }
 
 .fixed-buttons el-button {
@@ -170,29 +189,23 @@ export default defineComponent({
 
 @media (max-width: 768px) {
 	.resume-container {
-		padding: 10px 0;
+		padding: 10px 20px;
 	}
 
 	.fixed-buttons {
 		top: 0;
-		/* Adjust the position for mobile */
 		left: 0;
 		transform: none;
-		/* Reset the transform */
 		width: 100%;
 		max-width: 500px;
-		/* Full width on mobile */
 		justify-content: center;
-		/* Center the buttons */
 	}
 
 	.fixed-buttons el-button {
 		margin: 5px 0;
-		/* Add margin for better spacing on mobile */
 	}
 }
 
-/* Print styles */
 @media print {
 	.resume-container {
 		display: block;

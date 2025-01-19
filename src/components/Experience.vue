@@ -19,14 +19,22 @@
 			<el-form-item label="End Date">
 				<el-date-picker v-model="experience.endDate" type="date" placeholder="Select end date"
 					:disabled="experience.currentJob"></el-date-picker>
-				<el-checkbox style="margin-left: 10px;" v-model="experience.currentJob">I currently work here</el-checkbox>
+				<el-checkbox style="margin-left: 10px;" v-model="experience.currentJob">I currently work
+					here</el-checkbox>
 			</el-form-item>
 			<el-form-item label="Location">
 				<el-input v-model="experience.location" placeholder="Enter location"></el-input>
 			</el-form-item>
 			<el-form-item label="Description">
-				<el-input type="textarea" v-model="experience.jobDescription"
-					placeholder="Enter job description"></el-input>
+				<div v-for="(point, pointIndex) in experience.jobDescriptionPoints" :key="pointIndex"
+					style="display: flex; align-items: center;">
+					<el-input type="textarea" v-model="experience.jobDescriptionPoints[pointIndex]"
+						placeholder="Enter job description point" style="flex: 1;"></el-input>
+					<el-button type="danger" @click="removeDescriptionPoint(index, pointIndex)"
+						style="margin-left: 10px;">Remove</el-button>
+				</div>
+				<el-button type="primary" @click="addDescriptionPoint(index)" style="margin-top: 10px;">Add
+					Point</el-button>
 			</el-form-item>
 			<!-- Popconfirm for deleting experience -->
 			<div class="action-btns">
@@ -42,6 +50,19 @@
 				</el-popconfirm>
 			</div>
 		</div>
+
+		<!-- Display experiences as a bullet list -->
+		<ul>
+			<li v-for="(experience, index) in data" :key="index">
+				<strong>{{ experience.jobTitle }} at {{ experience.companyName }}</strong><br>
+				{{ formatMonthYear(experience.startDate) }} - {{ experience.currentJob ? 'Present' :
+					formatMonthYear(experience.endDate) }}<br>
+				{{ experience.location }}<br>
+				<ul>
+					<li v-for="point in experience.jobDescriptionPoints" :key="point">{{ point }}</li>
+				</ul>
+			</li>
+		</ul>
 	</div>
 </template>
 
@@ -63,7 +84,7 @@ export default defineComponent({
 					startDate: string;
 					endDate: string;
 					location: string;
-					jobDescription: string;
+					jobDescriptionPoints: string[];
 					currentJob: boolean;
 				}>
 			>,
@@ -78,7 +99,7 @@ export default defineComponent({
 				startDate: '',
 				endDate: '',
 				location: '',
-				jobDescription: '',
+				jobDescriptionPoints: [], // Initialize the jobDescriptionPoints array
 				currentJob: false
 			});
 		},
@@ -87,7 +108,37 @@ export default defineComponent({
 			if (index > -1 && index < this.data.length) { // so that we delete the correct experience
 				this.data.splice(index, 1);
 			}
+		},
+
+		addDescriptionPoint(experienceIndex: number) {
+			if (this.data[experienceIndex]) {
+				this.data[experienceIndex].jobDescriptionPoints.push('');
+			}
+		},
+
+		removeDescriptionPoint(experienceIndex: number, pointIndex: number) {
+			if (this.data[experienceIndex] && this.data[experienceIndex].jobDescriptionPoints) {
+				this.data[experienceIndex].jobDescriptionPoints.splice(pointIndex, 1);
+			}
+		},
+
+		formatMonthYear(date: string) {
+			if (!date) return ''; // Handle empty date
+			const options = { month: 'long', year: 'numeric' } as const;
+			return new Date(date).toLocaleDateString('en-US', options);
 		}
 	}
 });
 </script>
+
+<style scoped>
+.action-btns {
+	margin-top: 10px;
+}
+
+ul {
+	margin-top: 20px;
+	list-style-type: disc;
+	padding-left: 20px;
+}
+</style>

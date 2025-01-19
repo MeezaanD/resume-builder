@@ -5,7 +5,7 @@ body {
 	font-family: "Poppins", serif;
 	margin: 0;
 	padding: 0;
-	background-color: #f5f5f5;
+	/* background-color: #f5f5f5; */
 }
 
 /* Labels */
@@ -29,6 +29,7 @@ body {
 	object-fit: cover;
 	border-radius: 50%;
 	max-width: 100%;
+	margin-right: 10px;
 }
 
 /* Lists */
@@ -48,5 +49,5 @@ body {
 /* CV PREVIEW */
 
 .el-dialog {
-	width: 230mm !important;
+	width: 100%;
 }
