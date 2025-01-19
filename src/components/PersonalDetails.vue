@@ -22,7 +22,7 @@
 		</el-form-item>
 		<el-form-item label="Profile Photo">
 			<input type="file" @change="handleFileUpload" />
-			<img :src="data.profilePhoto" alt="Profile Photo" v-if="data.profilePhoto" />
+			<img class="profile-img" :src="data.profilePhoto" style="margin: 10px 0" alt="Profile Photo" v-if="data.profilePhoto" />
 		</el-form-item>
 	</div>
 </template>
